@@ -20,7 +20,7 @@ Player::Player() : currentState(PlayerState::Idle)
 void Player::Update(float deltaTime)
 {
     UpdateCooldowns(deltaTime);
-    std::cout << "Last dash time: " << lastDashTimeSec << std::endl;
+    // std::cout << "Last dash time: " << lastDashTimeSec << std::endl;
     Vector2 inputDirection = HandleInput();
 
     switch (currentState) // *While in state, do this*
@@ -85,27 +85,21 @@ std::string Player::GetState() const
     {
     case PlayerState::Idle:
         return "Idle";
-        break;
 
     case PlayerState::Walking:
         return "Walking";
-        break;
 
     case PlayerState::Dashing:
         return "Dashing";
-        break;
 
     case PlayerState::Attacking:
         return "Attacking";
-        break;
 
     case PlayerState::Dead:
         return "Dead";
-        break;
 
     default:
         return "Unknown";
-        break;
     }
 }
 
@@ -181,9 +175,9 @@ void Player::ApplyMovement(Vector2 targetVelocity, float acceleration, float del
 
 void Player::ApplyFriction(float deltaTime)
 {
-    float frictionFactor = 69.69f;                                                 // Friction factor (adjustable)
-    velocity.x = Approach(velocity.x, 0.0f, (frictionFactor * deltaTime) * 10.0f); // Apply friction to the X velocity
-    velocity.y = Approach(velocity.y, 0.0f, (frictionFactor * deltaTime) * 10.0f); // Apply friction to the Y velocity
+    float frictionAdjustment = 100.0f;                                                 // Friction Adjustment (adjustable)
+    velocity.x = Approach(velocity.x, 0.0f, (frictionAdjustment * deltaTime) * 10.0f); // Apply friction to the X velocity
+    velocity.y = Approach(velocity.y, 0.0f, (frictionAdjustment * deltaTime) * 10.0f); // Apply friction to the Y velocity
 }
 
 void Player::Dash(Vector2 inputDirection)
