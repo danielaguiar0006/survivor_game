@@ -4,49 +4,53 @@ Player::Player() : currentState(PlayerState::Idle)
 {
     isAlive = true;
     health = 100;
-    acceleration = 200.0f;
+    walkAcceleration = 200.0f;
     maxSpeed = 200.0f; // The actual maximum speed for regular player movement
     position = {0.0f, 0.0f};
     velocity = {0.0f, 0.0f};
     hitBox = {position.x, position.y, 40.0f, 40.0f};
 
     lastDashTimeSec = 0.0f;
-    dashCooldownSec = 2.5f;
-    dashDurationSec = 1.25f;
+    dashCooldownSec = 1.0f;
+    dashDurationSec = 0.25f;
+    dashAcceleration = 400.0f;
     targetDashVelocity = {0.0f, 0.0f};
 }
 
-void Player::Update(float deltaTime) // TODO: Implement State Machine
+void Player::Update(float deltaTime)
 {
     UpdateCooldowns(deltaTime);
-    // *std::cout << "Last dash time: " << lastDashTimeSec << std::endl;
+    std::cout << "Last dash time: " << lastDashTimeSec << std::endl;
     Vector2 inputDirection = HandleInput();
-
-    if (inputDirection.x == 0.0f && inputDirection.y == 0.0f) //! THIS FEELS NAIVE
-    {
-        SetState(PlayerState::Idle);
-    }
-    else
-    {
-        SetState(PlayerState::Walking);
-    }
 
     switch (currentState) // *While in state, do this*
     {
     case PlayerState::Idle:
         /* code */
+        if (inputDirection.x != 0.0f || inputDirection.y != 0.0f)
+        {
+            SetState(PlayerState::Walking);
+        }
         break;
 
     case PlayerState::Walking:
+        if (inputDirection.x == 0.0f && inputDirection.y == 0.0f)
+        {
+            SetState(PlayerState::Idle);
+            break;
+        }
+
         Vector2 targetVelocity = Vector2Scale(inputDirection, maxSpeed); // Get the target velocity based on the input direction and maximum speed
-        ApplyMovement(targetVelocity, deltaTime);
+        if (Vector2Length(targetVelocity) >= Vector2Length(velocity))    // To prevent friction and walking acceleration prematurly slowing down the player
+        {
+            ApplyMovement(targetVelocity, walkAcceleration, deltaTime);
+        }
         break;
 
     case PlayerState::Dashing:
         if (lastDashTimeSec < dashDurationSec) // If the dash duration is not yet over
         {
-            lastDashTimeSec += deltaTime; // Update the dash duration
-            ApplyMovement(targetDashVelocity, deltaTime);
+            ApplyMovement(targetDashVelocity, dashAcceleration, deltaTime);
         }
         else
         {
@@ -141,29 +145,6 @@ void Player::UpdateCooldowns(float deltaTime)
 
 Vector2 Player::HandleInput()
 {
-    // TODO: Re-Implement dash like in the previous code:
-    /*     Vector2 inputVelocity = {0.0f, 0.0f};
-
-        if (!isDashing)
-        {
-            if (IsKeyDown(KEY_W))
-                inputVelocity.y -= 1.0f;
-            if (IsKeyDown(KEY_S))
-                inputVelocity.y += 1.0f;
-            if (IsKeyDown(KEY_A))
-                inputVelocity.x -= 1.0f;
-            if (IsKeyDown(KEY_D))
-                inputVelocity.x += 1.0f;
-
-        if (IsKeyDown(KEY_SPACE) && lastDashTimeSec >= dashCooldownSec)
-        {
-            Dash();
-        }
-        else
-        {
-            velocity = inputVelocity; // Set the player's velocity only if not dashing
-        } */
-
     Vector2 inputDirection = {0.0f, 0.0f};
 
     if (IsKeyDown(KEY_W))
@@ -192,7 +173,7 @@ Vector2 Player::HandleInput()
     }
 }
 
-void Player::ApplyMovement(Vector2 targetVelocity, float deltaTime)
+void Player::ApplyMovement(Vector2 targetVelocity, float acceleration, float deltaTime)
 {
     velocity.x = Approach(velocity.x, targetVelocity.x, (acceleration * deltaTime) * 10.0f); // Apply acceleration to the X velocity
     velocity.y = Approach(velocity.y, targetVelocity.y, (acceleration * deltaTime) * 10.0f); // Apply acceleration to the Y velocity
@@ -205,12 +186,12 @@ void Player::ApplyFriction(float deltaTime)
     velocity.y = Approach(velocity.y, 0.0f, (frictionFactor * deltaTime) * 10.0f); // Apply friction to the Y velocity
 }
 
-void Player::Dash(Vector2 inputDirection) // TODO: Fix the dash and currently there is friction being applied while dashing
+void Player::Dash(Vector2 inputDirection)
 {
     SetState(PlayerState::Dashing); // Set the player's state to dashing
     lastDashTimeSec = 0.0f;         // Reset the dash cooldown
 
-    float dashSpeed = 1000.0f;                                    // The speed of the dash
+    float dashSpeed = 500.0f;                                     // The speed of the dash
     targetDashVelocity = Vector2Scale(inputDirection, dashSpeed); // Set the dash velocity to the input direction multiplied by the dash speed
 }
 

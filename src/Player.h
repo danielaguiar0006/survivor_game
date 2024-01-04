@@ -35,12 +35,13 @@ private:
     PlayerState currentState;
     bool isAlive;
     int health;
-    float acceleration;
+    float walkAcceleration;
     float maxSpeed;
     Vector2 position;
     Vector2 velocity;
     Rectangle hitBox;
 
+    float dashAcceleration;
     float lastDashTimeSec;
     float dashCooldownSec;
     float dashDurationSec;
@@ -49,7 +50,7 @@ private:
     void SetState(PlayerState newState);
     void UpdateCooldowns(float deltaTime);
     Vector2 HandleInput();
-    void ApplyMovement(Vector2 inputDirection, float deltaTime);
+    void ApplyMovement(Vector2 inputDirection, float acceleration, float deltaTime);
     void ApplyFriction(float deltaTime);
     void Dash(Vector2 inputDirection);
     float Approach(float current, float target, float maxDelta);
