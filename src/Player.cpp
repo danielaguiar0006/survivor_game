@@ -9,7 +9,7 @@ Player::Player() : Mob(), currentState(PlayerState::Idle)
     attackRange = 50.0f;
     walkAcceleration = 200.0f;
     maxSpeed = 200.0f; // The actual maximum speed for regular player movement
-    position = {0.0f, 0.0f};
+    position = {200.0f, 200.0f};
     velocity = {0.0f, 0.0f};
     hitBoxWidth = 40.0f;
     hitBoxHeight = 40.0f;
@@ -30,7 +30,7 @@ Player::~Player() // TODO: Add a destructor
     // UnloadTexture(myTexture);
 }
 
-void Player::Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive) // ? No use for tergetPosition and isTargetAlive
+void Player::Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive, std::vector<Mob *> allEntities) // ? No use for tergetPosition (maybe mouse position) and isTargetAlive
 {
     UpdateCooldowns(deltaTime);
 
@@ -76,8 +76,11 @@ void Player::Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive)
     }
 
     ApplyFriction(deltaTime);                                           // Apply friction to make movement less slippery
+    Vector2 oldPosition = position;                                     // For collision detection
     position = Vector2Add(position, Vector2Scale(velocity, deltaTime)); // Update the position based on velocity
     UpdateHitBox();                                                     // Update the hitbox position to match the player's position
+
+    CheckCollision(oldPosition, allEntities);
 }
 
 void Player::Draw() const

@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include <iostream>
+#include <vector>
 
 class Mob
 {
@@ -19,7 +20,7 @@ public:
     Mob();
     virtual ~Mob();
 
-    virtual void Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive);
+    virtual void Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive, std::vector<Mob *> allEntities);
     virtual void Draw() const;
 
     std::string GetState() const;
@@ -27,7 +28,8 @@ public:
     int GetHealth() const;
     Vector2 GetPosition() const;
     Vector2 GetVelocity() const;
-    Vector2 GetHitBoxSize() const;
+    Rectangle GetHitBox() const;
+    Vector2 GetHitBoxSize() const; // ? After introducing GetHitBox() this may no longer be needed
 
 protected:
     MobState currentState;
@@ -52,6 +54,7 @@ protected:
     float Approach(float current, float target, float maxDelta);
     bool IsWithinRange(Vector2 targetPosition, float range) const;
     void UpdateHitBox();
+    void CheckCollision(Vector2 oldPosition, std::vector<Mob *> allEntities);
 };
 
 #endif // MOB_H

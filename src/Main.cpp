@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Mob.h"
 #include <iostream>
+#include <vector>
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -32,6 +33,10 @@ int main(void)
     Player player;
     Mob testZombie;
 
+    std::vector<Mob *> allEntities; // ? Its a list of pointers to Mob objects not Entities
+    allEntities.push_back(&player);
+    allEntities.push_back(&testZombie);
+
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -39,8 +44,8 @@ int main(void)
     {
         // Update
         //----------------------------------------------------------------------------------
-        player.Update(GetFrameTime(), GetMousePosition(), NULL); // TODO: Use and Implement GetMousePosition() and GetMouseButtonDown()
-        testZombie.Update(GetFrameTime(), player.GetPosition(), player.IsAlive());
+        player.Update(GetFrameTime(), GetMousePosition(), NULL, allEntities); // TODO: Use and Implement GetMousePosition() and GetMouseButtonDown()
+        testZombie.Update(GetFrameTime(), player.GetPosition(), player.IsAlive(), allEntities);
         //----------------------------------------------------------------------------------
 
         // Draw

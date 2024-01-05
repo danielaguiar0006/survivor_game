@@ -17,7 +17,7 @@ public:
     Player();
     virtual ~Player();
 
-    void Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive) override;
+    void Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive, std::vector<Mob *> allEntities) override;
     void Draw() const override;
 
     std::string GetState() const; //? Not sure why its not 'override'
