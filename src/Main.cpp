@@ -6,6 +6,7 @@
 
 #include "raylib.h"
 #include "Player.h"
+#include "Mob.h"
 #include <iostream>
 
 //------------------------------------------------------------------------------------
@@ -29,6 +30,7 @@ int main(void)
     // camera.offset = { screenWidth / 2.0f, screenHeight / 2.0f };
 
     Player player;
+    Mob testZombie;
 
     //--------------------------------------------------------------------------------------
 
@@ -37,7 +39,8 @@ int main(void)
     {
         // Update
         //----------------------------------------------------------------------------------
-        player.Update(GetFrameTime());
+        player.Update(GetFrameTime(), GetMousePosition(), NULL); // TODO: Use and Implement GetMousePosition() and GetMouseButtonDown()
+        testZombie.Update(GetFrameTime(), player.GetPosition(), player.IsAlive());
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -48,12 +51,17 @@ int main(void)
         BeginMode2D(camera);
 
         player.Draw();
+        testZombie.Draw();
 
         EndMode2D();
 
         DrawText(TextFormat("Player Velocity; x = %f, %f", player.GetVelocity().x, player.GetVelocity().y), 10, 10, 18, BLACK);
         DrawText(TextFormat("Player Position; x = %f, %f", player.GetPosition().x, player.GetPosition().y), 10, 30, 18, BLACK);
         DrawText(TextFormat("Player State: %s", player.GetState().c_str()), 10, 50, 16, BLACK);
+
+        DrawText(TextFormat("Mob Velocity; x = %f, %f", testZombie.GetVelocity().x, testZombie.GetVelocity().y), 10, 70, 18, BLACK);
+        DrawText(TextFormat("Mob Position; x = %f, %f", testZombie.GetPosition().x, testZombie.GetPosition().y), 10, 90, 18, BLACK);
+        DrawText(TextFormat("Mob State: %s", testZombie.GetState().c_str()), 10, 110, 16, BLACK);
 
         EndDrawing();
         //----------------------------------------------------------------------------------

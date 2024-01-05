@@ -30,7 +30,7 @@ endif()
 
 # Our Project
 
-set(SOURCE_FILES src/Main.cpp src/Player.cpp) # Add other source files as needed
+set(SOURCE_FILES src/Main.cpp src/Player.cpp src/Mob.cpp) # Add other source files as needed
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)

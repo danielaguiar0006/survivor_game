@@ -1,32 +1,44 @@
 #include "Player.h"
 
-Player::Player() : currentState(PlayerState::Idle)
+Player::Player() : Mob(), currentState(PlayerState::Idle)
 {
     isAlive = true;
     health = 100;
+    isHostile = NULL;
+    aggroRange = NULL;
+    attackRange = 50.0f;
     walkAcceleration = 200.0f;
     maxSpeed = 200.0f; // The actual maximum speed for regular player movement
     position = {0.0f, 0.0f};
     velocity = {0.0f, 0.0f};
-    hitBox = {position.x, position.y, 40.0f, 40.0f};
+    hitBoxWidth = 40.0f;
+    hitBoxHeight = 40.0f;
+    hitBox = {position.x - (hitBox.width / 2), position.y - (hitBox.height / 2), hitBoxWidth, hitBoxWidth}; // Origin of the hitbox is the center of the hitbox
 
     lastDashTimeSec = 0.0f;
     dashCooldownSec = 1.0f;
     dashDurationSec = 0.25f;
-    dashAcceleration = 400.0f;
+    dashAcceleration = 600.0f;
     targetDashVelocity = {0.0f, 0.0f};
 }
 
-void Player::Update(float deltaTime)
+Player::~Player() // TODO: Add a destructor
+{
+    // Cleanup code here
+    // Example: If Player had dynamically allocated memory or loaded textures
+    // delete myPointer;
+    // UnloadTexture(myTexture);
+}
+
+void Player::Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive) // ? No use for tergetPosition and isTargetAlive
 {
     UpdateCooldowns(deltaTime);
-    // std::cout << "Last dash time: " << lastDashTimeSec << std::endl;
+
     Vector2 inputDirection = HandleInput();
 
     switch (currentState) // *While in state, do this*
     {
     case PlayerState::Idle:
-        /* code */
         if (inputDirection.x != 0.0f || inputDirection.y != 0.0f)
         {
             SetState(PlayerState::Walking);
@@ -56,7 +68,9 @@ void Player::Update(float deltaTime)
         {
             SetState(PlayerState::Idle); //? Should it be to Idle or Walking or something else?
         }
+        break;
 
+        // TODO: Add remaining states
         /*     default:
                 break; */
     }
@@ -69,14 +83,6 @@ void Player::Update(float deltaTime)
 void Player::Draw() const
 {
     DrawRectangleRec(hitBox, GRAY); // Draw the player's hitbox
-}
-
-void Player::CheckHealth()
-{
-    if (health <= 0)
-    {
-        isAlive = false;
-    }
 }
 
 std::string Player::GetState() const
@@ -101,26 +107,6 @@ std::string Player::GetState() const
     default:
         return "Unknown";
     }
-}
-
-int Player::GetHealth() const
-{
-    return health; // Return the player's current health
-}
-
-Vector2 Player::GetPosition() const
-{
-    return position; // Return the player's current position
-}
-
-Vector2 Player::GetVelocity() const
-{
-    return velocity; // Return the player's current velocity
-}
-
-Vector2 Player::GetHitBoxSize() const
-{
-    return {hitBox.width, hitBox.height}; // Return the player's hitbox size
 }
 
 void Player::SetState(PlayerState newState)
@@ -167,40 +153,11 @@ Vector2 Player::HandleInput()
     }
 }
 
-void Player::ApplyMovement(Vector2 targetVelocity, float acceleration, float deltaTime)
-{
-    velocity.x = Approach(velocity.x, targetVelocity.x, (acceleration * deltaTime) * 10.0f); // Apply acceleration to the X velocity
-    velocity.y = Approach(velocity.y, targetVelocity.y, (acceleration * deltaTime) * 10.0f); // Apply acceleration to the Y velocity
-}
-
-void Player::ApplyFriction(float deltaTime)
-{
-    float frictionAdjustment = 100.0f;                                                 // Friction Adjustment (adjustable)
-    velocity.x = Approach(velocity.x, 0.0f, (frictionAdjustment * deltaTime) * 10.0f); // Apply friction to the X velocity
-    velocity.y = Approach(velocity.y, 0.0f, (frictionAdjustment * deltaTime) * 10.0f); // Apply friction to the Y velocity
-}
-
 void Player::Dash(Vector2 inputDirection)
 {
     SetState(PlayerState::Dashing); // Set the player's state to dashing
     lastDashTimeSec = 0.0f;         // Reset the dash cooldown
 
-    float dashSpeed = 500.0f;                                     // The speed of the dash
+    float dashSpeed = 600.0f;                                     // The speed of the dash
     targetDashVelocity = Vector2Scale(inputDirection, dashSpeed); // Set the dash velocity to the input direction multiplied by the dash speed
-}
-
-float Player::Approach(float current, float target, float maxDelta)
-{
-    float delta = target - current; // Get the difference between the current and target values
-    if (delta > maxDelta)           // If the difference is greater than the maximum delta
-        delta = maxDelta;           // Set the difference to the maximum delta
-    if (delta < -maxDelta)          // If the difference is less than the negative maximum delta
-        delta = -maxDelta;          // Set the difference to the negative maximum delta
-    return current + delta;         // Return the current value plus the difference
-}
-
-void Player::UpdateHitBox()
-{
-    hitBox.x = position.x; // Update the hitbox's X position
-    hitBox.y = position.y; // Update the hitbox's Y position
 }

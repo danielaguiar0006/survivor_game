@@ -1,11 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "raylib.h"
-#include "raymath.h"
-#include <iostream>
-
-class Player
+#include "Mob.h"
+class Player : public Mob
 {
 public:
     enum class PlayerState //? Should this be public?
@@ -18,29 +15,15 @@ public:
     };
 
     Player();
-    //? virtual ~Player();
+    virtual ~Player();
 
-    void Update(float deltaTime);
-    void Draw() const;
+    void Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive) override;
+    void Draw() const override;
 
-    void CheckHealth(); //? Should this be private?
-
-    std::string GetState() const;
-    int GetHealth() const;
-    Vector2 GetPosition() const;
-    Vector2 GetVelocity() const;
-    Vector2 GetHitBoxSize() const;
+    std::string GetState() const; //? Not sure why its not 'override'
 
 private:
     PlayerState currentState;
-    bool isAlive;
-    int health;
-    float walkAcceleration;
-    float maxSpeed;
-    Vector2 position;
-    Vector2 velocity;
-    Rectangle hitBox;
-
     float dashAcceleration;
     float lastDashTimeSec;
     float dashCooldownSec;
@@ -48,13 +31,9 @@ private:
     Vector2 targetDashVelocity;
 
     void SetState(PlayerState newState);
-    void UpdateCooldowns(float deltaTime);
+    void UpdateCooldowns(float deltaTime) override;
     Vector2 HandleInput();
-    void ApplyMovement(Vector2 inputDirection, float acceleration, float deltaTime);
-    void ApplyFriction(float deltaTime);
     void Dash(Vector2 inputDirection);
-    float Approach(float current, float target, float maxDelta);
-    void UpdateHitBox();
 };
 
 #endif // PLAYER_H
