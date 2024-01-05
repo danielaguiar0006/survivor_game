@@ -39,13 +39,16 @@ void Player::Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive,
     switch (currentState) // *While in state, do this*
     {
     case PlayerState::Idle:
+    {
         if (inputDirection.x != 0.0f || inputDirection.y != 0.0f)
         {
             SetState(PlayerState::Walking);
         }
         break;
+    }
 
     case PlayerState::Walking:
+    {
         if (inputDirection.x == 0.0f && inputDirection.y == 0.0f)
         {
             SetState(PlayerState::Idle);
@@ -58,8 +61,9 @@ void Player::Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive,
             ApplyMovement(targetVelocity, walkAcceleration, deltaTime);
         }
         break;
-
+    }
     case PlayerState::Dashing:
+    {
         if (lastDashTimeSec < dashDurationSec) // If the dash duration is not yet over
         {
             ApplyMovement(targetDashVelocity, dashAcceleration, deltaTime);
@@ -73,6 +77,7 @@ void Player::Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive,
         // TODO: Add remaining states
         /*     default:
                 break; */
+    }
     }
 
     ApplyFriction(deltaTime);                                           // Apply friction to make movement less slippery

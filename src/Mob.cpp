@@ -229,7 +229,7 @@ void Mob::UpdateHitBox()
     }
 } */
 
-void Mob::CheckCollision(Vector2 oldPosition, std::vector<Mob *> allEntities) // TODO: FIXME - This is jankey
+/* void Mob::CheckCollision(Vector2 oldPosition, std::vector<Mob *> allEntities) // TODO: FIXME - This is jankey
 {
     for (Mob *other : allEntities)
     {
@@ -252,6 +252,49 @@ void Mob::CheckCollision(Vector2 oldPosition, std::vector<Mob *> allEntities) //
             {
                 // If the collision is mostly vertical, only allow horizontal movement
                 position.y = oldPosition.y; // Keep the old Y position
+            }
+
+            UpdateHitBox();
+            break;
+        }
+    }
+} */
+
+void Mob::CheckCollision(Vector2 oldPosition, std::vector<Mob *> allEntities) // TODO: FIXME - WIP
+{
+    for (Mob *other : allEntities)
+    {
+        if (other != this && other->IsAlive() && CheckCollisionRecs(hitBox, other->GetHitBox()))
+        {
+            std::cout << "Collision detected" << std::endl;
+
+            Rectangle collisionRectangle = GetCollisionRec(hitBox, other->GetHitBox());
+
+            if (collisionRectangle.width < collisionRectangle.height)
+            {
+                if (position.x < other->GetPosition().x)
+                {
+                    position.x -= collisionRectangle.width;
+                }
+                else
+                {
+                    position.x += collisionRectangle.width;
+                }
+                velocity.x = 0.0f;
+                other->velocity.x = 0.0f;
+            }
+            else
+            {
+                if (position.y < other->GetPosition().y)
+                {
+                    position.y -= collisionRectangle.height;
+                }
+                else
+                {
+                    position.y += collisionRectangle.height;
+                }
+                velocity.y = 0.0f;
+                other->velocity.y = 0.0f;
             }
 
             UpdateHitBox();
