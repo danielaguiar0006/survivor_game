@@ -13,8 +13,9 @@ public:
         Attacking,
         Dead
     };
+    bool testFlag;
 
-    Player();
+    Player(bool testFlag = false);
     virtual ~Player();
 
     void Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive, std::vector<Mob *> allEntities) override;

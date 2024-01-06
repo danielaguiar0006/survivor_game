@@ -31,11 +31,13 @@ int main(void)
     // camera.offset = { screenWidth / 2.0f, screenHeight / 2.0f };
 
     Player player;
-    Mob testZombie;
+    Player player2(true);
+    /*     Mob testZombie; */
 
     std::vector<Mob *> allEntities; // ? Its a list of pointers to Mob objects not Entities
     allEntities.push_back(&player);
-    allEntities.push_back(&testZombie);
+    allEntities.push_back(&player2);
+    /*     allEntities.push_back(&testZombie); */
 
     //--------------------------------------------------------------------------------------
 
@@ -44,8 +46,9 @@ int main(void)
     {
         // Update
         //----------------------------------------------------------------------------------
-        player.Update(GetFrameTime(), GetMousePosition(), NULL, allEntities); // TODO: Use and Implement GetMousePosition() and GetMouseButtonDown()
-        testZombie.Update(GetFrameTime(), player.GetPosition(), player.IsAlive(), allEntities);
+        player.Update(GetFrameTime(), GetMousePosition(), NULL, allEntities);  // TODO: Use and Implement GetMousePosition() and GetMouseButtonDown()
+        player2.Update(GetFrameTime(), GetMousePosition(), NULL, allEntities); // TODO: Use and Implement GetMousePosition() and GetMouseButtonDown()
+                                                                               /*         testZombie.Update(GetFrameTime(), player.GetPosition(), player.IsAlive(), allEntities); */
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -56,7 +59,8 @@ int main(void)
         BeginMode2D(camera);
 
         player.Draw();
-        testZombie.Draw();
+        player2.Draw();
+        /*         testZombie.Draw(); */
 
         EndMode2D();
 
@@ -64,9 +68,13 @@ int main(void)
         DrawText(TextFormat("Player Position; x = %f, %f", player.GetPosition().x, player.GetPosition().y), 10, 30, 18, BLACK);
         DrawText(TextFormat("Player State: %s", player.GetState().c_str()), 10, 50, 16, BLACK);
 
-        DrawText(TextFormat("Mob Velocity; x = %f, %f", testZombie.GetVelocity().x, testZombie.GetVelocity().y), 10, 70, 18, BLACK);
-        DrawText(TextFormat("Mob Position; x = %f, %f", testZombie.GetPosition().x, testZombie.GetPosition().y), 10, 90, 18, BLACK);
-        DrawText(TextFormat("Mob State: %s", testZombie.GetState().c_str()), 10, 110, 16, BLACK);
+        DrawText(TextFormat("Mob Velocity; x = %f, %f", player2.GetVelocity().x, player2.GetVelocity().y), 10, 70, 18, BLACK);
+        DrawText(TextFormat("Mob Position; x = %f, %f", player2.GetPosition().x, player2.GetPosition().y), 10, 90, 18, BLACK);
+        DrawText(TextFormat("Mob State: %s", player2.GetState().c_str()), 10, 110, 16, BLACK);
+
+        /*         DrawText(TextFormat("Mob Velocity; x = %f, %f", testZombie.GetVelocity().x, testZombie.GetVelocity().y), 10, 70, 18, BLACK);
+                DrawText(TextFormat("Mob Position; x = %f, %f", testZombie.GetPosition().x, testZombie.GetPosition().y), 10, 90, 18, BLACK);
+                DrawText(TextFormat("Mob State: %s", testZombie.GetState().c_str()), 10, 110, 16, BLACK); */
 
         EndDrawing();
         //----------------------------------------------------------------------------------

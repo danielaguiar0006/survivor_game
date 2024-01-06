@@ -54,7 +54,7 @@ protected:
     float Approach(float current, float target, float maxDelta);
     bool IsWithinRange(Vector2 targetPosition, float range) const;
     void UpdateHitBox();
-    void CheckCollision(Vector2 oldPosition, std::vector<Mob *> allEntities);
+    void CheckCollision(std::vector<Mob *> allEntities);
 };
 
 #endif // MOB_H

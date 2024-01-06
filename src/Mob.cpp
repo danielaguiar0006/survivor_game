@@ -83,11 +83,10 @@ void Mob::Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive, st
     }
 
     ApplyFriction(deltaTime);                                           // Apply friction to make movement less slippery
-    Vector2 oldPosition = position;                                     // For collision detection
     position = Vector2Add(position, Vector2Scale(velocity, deltaTime)); // Update the position based on velocity
     UpdateHitBox();                                                     // Update the hitbox position to match the player's position
 
-    CheckCollision(oldPosition, allEntities);
+    CheckCollision(allEntities);
 }
 
 void Mob::Draw() const
@@ -215,52 +214,7 @@ void Mob::UpdateHitBox()
     hitBox.y = position.y - (hitBox.height / 2); // Update the hitbox's Y position
 }
 
-/* void Mob::CheckCollision(Vector2 oldPosition, std::vector<Mob *> allEntities) // ! Feels sticky
-{
-    for (Mob *other : allEntities)
-    {
-        if (other != this && other->IsAlive() && CheckCollisionRecs(hitBox, other->GetHitBox()))
-        {
-            std::cout << "Collision detected" << std::endl;
-            position = oldPosition;
-            UpdateHitBox();
-            break;
-        }
-    }
-} */
-
-/* void Mob::CheckCollision(Vector2 oldPosition, std::vector<Mob *> allEntities) // TODO: FIXME - This is jankey
-{
-    for (Mob *other : allEntities)
-    {
-        if (other != this && other->IsAlive() && CheckCollisionRecs(hitBox, other->GetHitBox()))
-        {
-            std::cout << "Collision detected" << std::endl;
-
-            // Calculate the direction of the collision
-            Vector2 collisionDirection = Vector2Subtract(position, other->GetPosition());
-
-            // Normalize the direction
-            collisionDirection = Vector2Normalize(collisionDirection);
-
-            // If the collision is mostly horizontal, only allow vertical movement
-            if (std::abs(collisionDirection.x) > std::abs(collisionDirection.y))
-            {
-                position.x = oldPosition.x; // Keep the old X position
-            }
-            else
-            {
-                // If the collision is mostly vertical, only allow horizontal movement
-                position.y = oldPosition.y; // Keep the old Y position
-            }
-
-            UpdateHitBox();
-            break;
-        }
-    }
-} */
-
-void Mob::CheckCollision(Vector2 oldPosition, std::vector<Mob *> allEntities) // TODO: FIXME - WIP
+void Mob::CheckCollision(std::vector<Mob *> allEntities) // TODO: FIXME - WIP
 {
     for (Mob *other : allEntities)
     {

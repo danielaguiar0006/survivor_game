@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player() : Mob(), currentState(PlayerState::Idle)
+Player::Player(bool testFlag) : Mob(), currentState(PlayerState::Idle), testFlag(testFlag)
 {
     isAlive = true;
     health = 100;
@@ -81,11 +81,10 @@ void Player::Update(float deltaTime, Vector2 targetPosition, bool isTargetAlive,
     }
 
     ApplyFriction(deltaTime);                                           // Apply friction to make movement less slippery
-    Vector2 oldPosition = position;                                     // For collision detection
     position = Vector2Add(position, Vector2Scale(velocity, deltaTime)); // Update the position based on velocity
     UpdateHitBox();                                                     // Update the hitbox position to match the player's position
 
-    CheckCollision(oldPosition, allEntities);
+    CheckCollision(allEntities);
 }
 
 void Player::Draw() const
@@ -135,13 +134,13 @@ Vector2 Player::HandleInput()
 {
     Vector2 inputDirection = {0.0f, 0.0f};
 
-    if (IsKeyDown(KEY_W))
+    if (IsKeyDown(KEY_UP))
         inputDirection.y -= 1.0f;
-    if (IsKeyDown(KEY_S))
+    if (IsKeyDown(KEY_DOWN))
         inputDirection.y += 1.0f;
-    if (IsKeyDown(KEY_A))
+    if (IsKeyDown(KEY_LEFT))
         inputDirection.x -= 1.0f;
-    if (IsKeyDown(KEY_D))
+    if (IsKeyDown(KEY_RIGHT))
         inputDirection.x += 1.0f;
 
     if (Vector2Length(inputDirection) > 0)
